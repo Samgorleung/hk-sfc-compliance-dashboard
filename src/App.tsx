@@ -29,56 +29,15 @@ export default function App() {
   const [report, setReport] = useState<ComplianceReport | null>(null);
   const [ukErrorText, setUkErrorText] = useState<string | null>(null);
   const [ukErrorDetails, setUkErrorDetails] = useState<string | null>(null);
-  const [demoCompaniesUK, setDemoCompaniesUK] = useState<Array<{ company_number: string; company_name: string }>>([]);
   
   // Hong Kong Market state
   const [loadingHK, setLoadingHK] = useState(false);
   const [hkEntity, setHkEntity] = useState<HKLicensedEntity | null>(null);
   const [multipleMatches, setMultipleMatches] = useState<any[]>([]);
   const [hkErrorText, setHkErrorText] = useState<string | null>(null);
-  const [demoEntitiesHK, setDemoEntitiesHK] = useState<Array<{ company_number: string; company_name: string; ce_number?: string }>>([]);
 
   // Combined panel active sub-tabs for the UK setup
   const [activeTabUK, setActiveTabUK] = useState<"regulatory" | "risk" | "cross_border" | "officers">("regulatory");
-
-  // Fetch verified dual-market demo list on initialization
-  useEffect(() => {
-    // 1. Fetch UK demos
-    fetch("/api/demo-companies")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Unable to fetch standard reference indices.");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setDemoCompaniesUK(data);
-        if (data.length > 0) {
-          handleSearchUK(data[0].company_number);
-        }
-      })
-      .catch((err) => {
-        console.error("Initialization error for UK:", err);
-      });
-
-    // 2. Fetch HK demos
-    fetch("/api/hk-demo-entities")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Unable to fetch Hong Kong SFC licensed reference indices.");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setDemoEntitiesHK(data);
-        if (data.length > 0) {
-          handleSearchHK(data[0].ce_number || data[0].company_number);
-        }
-      })
-      .catch((err) => {
-        console.error("Initialization error for HK:", err);
-      });
-  }, []);
 
   // Search logic for UK Entities
   const handleSearchUK = async (companyNumber: string) => {
@@ -226,12 +185,10 @@ export default function App() {
           onSearchUK={handleSearchUK}
           loadingUK={loadingUK}
           onSelectUKDemo={handleSearchUK}
-          demoCompaniesUK={demoCompaniesUK}
 
           onSearchHK={handleSearchHK}
           loadingHK={loadingHK}
           onSelectHKDemo={handleSelectHKDemo}
-          demoCompaniesHK={demoEntitiesHK}
         />
 
         {/* Dual-Market Side-by-Side Results Workspaces */}
@@ -614,8 +571,8 @@ export default function App() {
                 <ShieldCheck className="w-4 h-4" />
                 Hong Kong SFC Licensing Core
               </span>
-              <span className="text-[10px] font-mono bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded-full uppercase font-bold text-3xs">
-                SFC Database Mode
+              <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full uppercase font-bold text-3xs">
+                SFC LIVE ENGINE MODE
               </span>
             </div>
 
@@ -759,7 +716,7 @@ export default function App() {
             <p className="p-0 m-0 text-3xs font-mono leading-relaxed">
               Bilateral Mapping Engine Version 2.85-PROD<br />
               Connected client-side MongoDB: Port 27017 Direct<br />
-              SFC Registry Verification: Active Connection Query Shell<br />
+              SFC Registry Verification: SFC LIVE ENGINE MODE<br />
               Tone: Objective Regulatory-Aligned Corporate Profile
             </p>
           </div>

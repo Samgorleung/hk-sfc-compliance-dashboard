@@ -5,23 +5,19 @@ interface CompanyFormProps {
   onSearchUK: (companyNumber: string) => void;
   loadingUK: boolean;
   onSelectUKDemo: (companyNumber: string) => void;
-  demoCompaniesUK: Array<{ company_number: string; company_name: string }>;
 
   onSearchHK: (identifier: string) => void;
   loadingHK: boolean;
   onSelectHKDemo: (identifier: string) => void;
-  demoCompaniesHK: Array<{ company_number: string; company_name: string; ce_number?: string }>;
 }
 
 export default function CompanyForm({
   onSearchUK,
   loadingUK,
   onSelectUKDemo,
-  demoCompaniesUK,
   onSearchHK,
   loadingHK,
   onSelectHKDemo,
-  demoCompaniesHK,
 }: CompanyFormProps) {
   const [ukInput, setUkInput] = useState("");
   const [ukError, setUkError] = useState("");
@@ -66,15 +62,12 @@ export default function CompanyForm({
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative flex flex-col justify-between">
         <div className="absolute top-0 left-0 w-full h-1 bg-slate-800"></div>
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-5">
             <Building2 className="w-5 h-5 text-slate-800" />
             <h3 className="text-sm font-sans font-bold text-slate-800 tracking-tight uppercase">
               UK Corporate Registry Verification
             </h3>
           </div>
-          <p className="text-xs font-sans text-slate-500 mb-5 leading-relaxed min-h-[48px]">
-            Verification of official United Kingdom corporate registrations requires entering a unique 8-character UK Company Number (e.g., eight numeric digits or standard prefixes such as SC, NI, or OC). On submission, compliance engines analyze the active filings against dual jurisdictional parameters.
-          </p>
 
           <form onSubmit={handleUKSubmit} className="mb-4">
             <div className="relative mb-3">
@@ -119,45 +112,37 @@ export default function CompanyForm({
           </form>
         </div>
 
-        {demoCompaniesUK.length > 0 && (
-          <div className="border-t border-slate-200 pt-4 mt-2">
-            <span className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Available UK Demo Indices
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {demoCompaniesUK.map((dem) => (
-                <button
-                  key={dem.company_number}
-                  type="button"
-                  onClick={() => {
-                    setUkInput(dem.company_number);
-                    onSelectUKDemo(dem.company_number);
-                  }}
-                  disabled={loadingUK}
-                  className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
-                >
-                  <Play className="w-2.5 h-2.5 text-slate-400" />
-                  {dem.company_name} ({dem.company_number})
-                </button>
-              ))}
-            </div>
+        <div className="border-t border-slate-200 pt-4 mt-2">
+          <span className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">
+            Quick Test Benchmarks
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setUkInput("00048839");
+                onSelectUKDemo("00048839");
+              }}
+              disabled={loadingUK}
+              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
+            >
+              <Play className="w-2.5 h-2.5 text-slate-400" />
+              BARCLAYS PLC (00048839)
+            </button>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Hong Kong SFC Licensed Entity Check Panel */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative flex flex-col justify-between">
         <div className="absolute top-0 left-0 w-full h-1 bg-slate-800"></div>
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-5">
             <ShieldCheck className="w-5 h-5 text-slate-800" />
             <h3 className="text-sm font-sans font-bold text-slate-800 tracking-tight uppercase">
               Hong Kong SFC Licensed Entity Check
             </h3>
           </div>
-          <p className="text-xs font-sans text-slate-500 mb-5 leading-relaxed min-h-[48px]">
-            Verification of Hong Kong SFC licensed corporations requires inputting a dedicated Central Entity Reference (CEREF) code or numeric CE Number. Registered entries are cross-referenced with licensing databases to execute immediate regulatory due diligence mapping.
-          </p>
           <form onSubmit={handleHKSubmit} className="mb-4">
             <div className="relative mb-3">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -201,34 +186,26 @@ export default function CompanyForm({
           </form>
         </div>
 
-        {demoCompaniesHK.length > 0 && (
-          <div className="border-t border-slate-200 pt-4 mt-2">
-            <span className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Available Hong Kong SFC Demo Indices
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {demoCompaniesHK.map((dem) => {
-                const ceVal = dem.ce_number || dem.company_number;
-                return (
-                  <button
-                    key={ceVal}
-                    type="button"
-                    data-ce-number={ceVal}
-                    onClick={() => {
-                      setHkInput(ceVal);
-                      onSelectHKDemo(ceVal);
-                    }}
-                    disabled={loadingHK}
-                    className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
-                  >
-                    <Play className="w-2.5 h-2.5 text-slate-400" />
-                    {dem.company_name} ({ceVal})
-                  </button>
-                );
-              })}
-            </div>
+        <div className="border-t border-slate-200 pt-4 mt-2">
+          <span className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">
+            Quick Test Benchmarks
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              data-ce-number="AAB893"
+              onClick={() => {
+                setHkInput("AAB893");
+                onSelectHKDemo("AAB893");
+              }}
+              disabled={loadingHK}
+              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
+            >
+              <Play className="w-2.5 h-2.5 text-slate-400" />
+              CLSA LIMITED (AAB893)
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
