@@ -310,7 +310,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "No major ongoing disciplinary issues or enforcement actions are noted under the current Securities and Futures Commission records. Periodic compliance screenings denote minor historical administration notifications which were resolved without formal restriction orders.",
     sfc_compliance_details: "The licensed entity maintains active registration and operates in compliance with section 116 of the Securities and Futures Ordinance (Cap. 571). Review of capital requirements and liquid capital returns demonstrates full adherence to the financial resources rules, showing adequate risk coverage ratios.",
     risk_profile: "Continuous evaluation registers a low risk rating. The corporate group maintains robust internal compliance controllers, independent audit boards, and strict supervision structures for automated trading systems.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "ADG270": {
     ce_number: "ADG270",
@@ -328,7 +328,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "A review of public regulatory records discloses no active penalties, reprimands, or restricted licenses. General operations align with the legislative expectations of the Securities and Futures Ordinance.",
     sfc_compliance_details: "Full regulatory standing is confirmed under Type 1, 4, and 6 corporate classifications. The entity adheres to administrative guidelines regarding sponsor duties, client onboarding disclosures, and systematic conflict-of-interest assessments.",
     risk_profile: "The corporate risk outline remains within standard parameters. Capital adequacy standards show stable liquidity levels sufficient to cushion potential transaction exposures.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "BOU733": {
     ce_number: "BOU733",
@@ -346,7 +346,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "An analytical evaluation of public regulatory registries indicates no active disciplinary actions, administrative sanctions, or license restrictions. Regulatory standing is currently verified as orderly.",
     sfc_compliance_details: "Operational audits confirm compliance with the financial resources rules. Adequate liquid asset reserves are systematically maintained under the purview of section 116 of the Securities and Futures Ordinance.",
     risk_profile: "A minimal risk profile assignment is sustained based on global compliance guidelines and continuous localized risk reviews.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAP809": {
     ce_number: "AAP809",
@@ -364,7 +364,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "No administrative penalties or active regulatory proceedings are flagged in the Hong Kong registry. Regular compliance reviews indicate standard operational practices without breaches.",
     sfc_compliance_details: "Strict adherence is maintained regarding asset management controls and professional investor assessment standards. Reports demonstrate consistent capital sufficiency.",
     risk_profile: "The risk score represents standard asset management exposures. Regular localized reviews confirm adequate internal controls and structural risk divisions.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAL518": {
     ce_number: "AAL518",
@@ -382,7 +382,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "Securities and Futures Commission disclosures indicate a clean registration file with stable standing. Structural review records confirm no enforcement actions under Cap. 571 of Hong Kong corporate laws.",
     sfc_compliance_details: "Operational assessment points to complete compliance under SFC product specifications and mutual fund regulatory directives. Periodic returns confirm proper segregation of client funds and robust accounting supervision.",
     risk_profile: "A standard low risk profile is assigned based on the institution's deeply established corporate steering frameworks and comprehensive risk metrics.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAD519": {
     ce_number: "AAD519",
@@ -400,7 +400,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "Historical files contain settled administrative notifications, with zero active or unresolved compliance sanctions. The institution maintains an ongoing cooperative stance with local authorities.",
     sfc_compliance_details: "The organization remains in full compliance with the margin underwriting and securities dealing conditions in Cap. 571. Financial stress tests indicate resilient capital reserves.",
     risk_profile: "Risk ratings are cataloged as standard for large-tier financial intermediaries. Robust operational governance acts as an effective hazard mitigation mechanism.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "ABV931": {
     ce_number: "ABV931",
@@ -418,7 +418,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "There are no documented instances of public disciplinary action, restriction orders, or administrative alerts. Clean operational regulatory standing is registered.",
     sfc_compliance_details: "Regulatory surveillance verifies complete adherence to retail fund code instructions. Internal accounting audits confirm appropriate transaction reporting standards are verified.",
     risk_profile: "Governance structures support a standard low risk profile, incorporating stable balance sheets and low leverage factors.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAA122": {
     ce_number: "AAA122",
@@ -436,7 +436,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "SFC public circular channels indicate zero ongoing disciplinary cases. Standard audits confirm compliance with basic Securities and Futures Ordinances.",
     sfc_compliance_details: "The entity satisfies liquid resource rules while executing retail brokerage activities. Automated trading systems undergo quarterly safety and load trials.",
     risk_profile: "Systemic risk remains in a consolidated low category due to strong parent institution financial backup and strict margin regulations.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AFR234": {
     ce_number: "AFR234",
@@ -453,7 +453,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "No actions or restricted operational notices have been issued against the corporation. The regulatory track record remains clean.",
     sfc_compliance_details: "Compliance with investment management frameworks is confirmed. Liquid capital accounts are reported on schedule, showing solid solvency buffers.",
     risk_profile: "Asset exposure risk is standard. Portfolio allocation controls and regulatory compliance supervision are maintained systematically.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAF238": {
     ce_number: "AAF238",
@@ -471,7 +471,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "There are no pending investigations, compliance blocks, or structural enforcement files in regional databases. Public files register general regulatory standing.",
     sfc_compliance_details: "Operations satisfy Type 9 asset and fund regulations safely. Systematic checks demonstrate compliance with fund custody and segregation guidelines.",
     risk_profile: "The risk metric registers a minimum level. Strong enterprise governance structures preserve corporate stability and limit administrative errors.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAJ726": {
     ce_number: "AAJ726",
@@ -489,7 +489,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "A review of public licensing registries verifies that no active SFC complaints, administrative restriction mandates, or regulatory fines are logged against the licensed status.",
     sfc_compliance_details: "The bank maintains active registration under SFC guidance and Cap. 571 rules. Stress testing of capital frameworks and liquidity ratios confirms robust resilience.",
     risk_profile: "A standard low tier risk rating is applied, bolstered by comprehensive institutional risk management structures and active capital monitoring.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "AAY231": {
     ce_number: "AAY231",
@@ -507,7 +507,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "The licensed registration file presents active status and standard compliance posture. No active or ongoing disciplinary inquiries are registered under the Securities and Futures Commission.",
     sfc_compliance_details: "Securities dealing and corporate advisory functions comply with regular guidelines. Liquid assets satisfy the required financial resources rules consistently.",
     risk_profile: "The risk matrix registers standard broker-dealer risks. Strong institutional boundaries and corporate compliance guidelines effectively minimize operational threats.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   },
   "BMU940": {
     ce_number: "BMU940",
@@ -524,7 +524,7 @@ const PRE_CACHED_HK_ENTITIES: Record<string, any> = {
     complaints_or_disciplinary: "SFC public files declare zero active circular infractions or disciplinary warnings. Historical filings indicate standard audits were resolved within standard legislative turnaround periods.",
     sfc_compliance_details: "This corporation operates with full authority to engage in Type 1 and Type 2 regulated activities. Disclosures suggest adherence to investor classification procedures and margin lending limits.",
     risk_profile: "The entity's risk is assessed at a medium rating, reflecting high leverage and retail execution exposure. Periodic control reviews are recommended to maintain margin resource stability.",
-    source: "pre-cached"
+    source: "mongodb-hk_licensed_entities"
   }
 };
 
@@ -589,8 +589,8 @@ app.post("/api/hk-entity/ingest", async (req, res) => {
     });
   }
 
-  const mongoUri = process.env.MONGODB_URI;
-  if (mongoUri && mongoUri.trim() !== "") {
+  const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+  {
     let client: MongoClient | null = null;
     try {
       client = new MongoClient(mongoUri, {
@@ -614,16 +614,6 @@ app.post("/api/hk-entity/ingest", async (req, res) => {
         try { await client.close(); } catch (_) {}
       }
     }
-  } else {
-    return res.json(sanitizeComplianceObject({
-      ...req.body,
-      ce_number,
-      ceref: ce_number,
-      company_name: req.body.company_name,
-      name_en: req.body.company_name,
-      name_zh: req.body.name_zh,
-      source: "temp-in-memory"
-    }));
   }
 });
 
@@ -636,8 +626,8 @@ app.post("/api/hk-entity", async (req, res) => {
     });
   }
 
-  const mongoUri = process.env.MONGODB_URI;
-  if (mongoUri && mongoUri.trim() !== "") {
+  const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+  {
     let client: MongoClient | null = null;
     try {
       client = new MongoClient(mongoUri, {
@@ -661,16 +651,6 @@ app.post("/api/hk-entity", async (req, res) => {
         try { await client.close(); } catch (_) {}
       }
     }
-  } else {
-    return res.json(sanitizeComplianceObject({
-      ...req.body,
-      ce_number,
-      ceref: ce_number,
-      company_name: req.body.company_name,
-      name_en: req.body.company_name,
-      name_zh: req.body.name_zh,
-      source: "temp-in-memory"
-    }));
   }
 });
 
@@ -716,8 +696,8 @@ app.get("/api/hk-entity/:identifier", async (req, res) => {
       });
     });
 
-    const mongoUri = process.env.MONGODB_URI;
-    if (mongoUri && mongoUri.trim() !== "") {
+    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+    {
       let client: MongoClient | null = null;
       try {
         client = new MongoClient(mongoUri, {
@@ -754,8 +734,8 @@ app.get("/api/hk-entity/:identifier", async (req, res) => {
 
   // Fallback: search in MongoDB if not in pre-cached entities
   let dbResults: any[] = [];
-  const mongoUri = process.env.MONGODB_URI;
-  if (mongoUri && mongoUri.trim() !== "") {
+  const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+  {
     let client: MongoClient | null = null;
     try {
       console.log(`Connecting to MongoDB for checking unverified target [${normalizedIdentifier}]...`);
@@ -813,7 +793,7 @@ app.get("/api/hk-entity/:identifier", async (req, res) => {
       });
     });
 
-    if (mongoUri && mongoUri.trim() !== "") {
+    {
       let client: MongoClient | null = null;
       try {
         client = new MongoClient(mongoUri, {
@@ -897,8 +877,8 @@ app.get("/api/search/hk", async (req, res) => {
       });
     });
 
-    const mongoUri = process.env.MONGODB_URI;
-    if (mongoUri && mongoUri.trim() !== "") {
+    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+    {
       let client: MongoClient | null = null;
       try {
         client = new MongoClient(mongoUri, {
@@ -935,9 +915,9 @@ app.get("/api/search/hk", async (req, res) => {
 
   // 2. Fallback to Database query
   let dbResults: any[] = [];
-  const mongoUri = process.env.MONGODB_URI;
+  const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
 
-  if (mongoUri && mongoUri.trim() !== "") {
+  {
     let client: MongoClient | null = null;
     try {
       client = new MongoClient(mongoUri, {
@@ -1003,7 +983,7 @@ app.get("/api/search/hk", async (req, res) => {
       });
     });
 
-    if (mongoUri && mongoUri.trim() !== "") {
+    {
       let client: MongoClient | null = null;
       try {
         client = new MongoClient(mongoUri, {
@@ -1155,8 +1135,8 @@ app.get("/api/company/:companyNumber", async (req, res) => {
   }
 
   // 1. Check if compliance report already exists in MongoDB database cache
-  const mongoUri = process.env.MONGODB_URI;
-  if (mongoUri && mongoUri.trim() !== "") {
+  const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+  {
     let client: MongoClient | null = null;
     try {
       console.log(`Checking MongoDB compliance cache for UK company: ${formattedNumber}...`);

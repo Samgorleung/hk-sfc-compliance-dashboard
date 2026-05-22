@@ -1,5 +1,26 @@
 # Corporate Compliance Companion - Change Log
 
+### Date: 2026-05-22
+### Author: Automated Cross-Border Corporate Compliance Officer
+
+---
+
+### Technical Modifications Overview
+
+#### 1. Hong Kong Multiple Match Object Property Alignment
+The backend evaluation operations encompassing the Hong Kong Securities and Futures Commission (SFC) records have been restructured regarding search arrays and entity retrieval protocols. The pre-cached arrays were re-aligned to definitively map distinct corporate entities to exact Central Entity Reference (CE) numbers. Precision mapping enforces that search queries yielding multiple results accurately parse their distinct corporate data architectures without property overlap.
+
+#### 2. Mandatory MongoDB Synchronization Framework
+A systemic database synchronization pipeline is now mandatorily enforced within all Hong Kong licensed entity query handler components. The backend infrastructure is structured to enact an explicit asynchronous write transaction through the MongoDB `hk_licensed_entities` collection via an `updateOne` command executed with an `upsert: true` rule. Profile evaluations retrieved from primary registries or caches are therefore automatically committed to the database, ensuring operational transaction pipelines override static file modes and secure persistent data mapping.
+
+#### 3. Client-Side Entity Disambiguation Re-Fetch Architecture
+The frontend user interface corresponding to Hong Kong entity disambiguation components has been coupled to the established backend transaction pipeline. Interacting with the multiple match selection panel now successfully issues a dedicated network call via the `/api/hk-entity/:identifier` endpoint. This configuration forces the selection command to process securely through the backend infrastructure, guaranteeing the execution of the mandatory database insertion logic instead of conducting localized in-memory state manipulation.
+
+#### 4. Compliance Syntactic Sanitization Protocol
+Data transfer objects directed toward the aforementioned MongoDB update routines have been systematically structured to pass through the `sanitizeComplianceObject` method. This process completely enforces objective, formal third-person syntax standards across all stored collection files, supporting alignment with external regional compliance directives and preventing deviation in the resulting evaluation reports.
+
+---
+
 ### Date: 2026-05-21
 ### Author: Automated Cross-Border Corporate Compliance Officer
 
