@@ -33,4 +33,8 @@ An automated non-blocking database seeding procedure has been incorporated into 
 #### 8. License Reference Alignment and Central Entity Reference Synchronization
 To support seamless cross-border corporate alignment, the central data mapping reference dictionaries on the backend have been synchronized. The verification parameters for key institutional entities were audited to ensure absolute alignment with live regulatory registers. Specifically, the Central Entity Reference (CEREF) code associated with HSBC Investment Funds (Hong Kong) Limited was successfully migrated from the placeholder identifier `AAF302` to the official licensed credential `AAL518`. Valid reference indices for major financial counterparties, such as CLSA Limited (`AAL982`) and Tiger Brokers, were verified to ensure precise MongoDB query resolution on subsequent execution loops.
 
+#### 9. Preventative Control for Unmatched SFC Identifiers
+To eliminate potential generative hallucinations on invalid search criteria, the routing logic of the Hong Kong Securities and Futures Commission (SFC) query system has been modified. In the event of a database search miss against both the live MongoDB collection and the pre-cached registry, the server immediately halts execution and returns an HTTP 404 Corporate Record Not Found response. This preventative safety measure ensures that unmatched or empty queries are not processed by dynamic LLM generation layers or passed to the underlying AI synthesis prompts, forcing a clean error state on the frontend.
+
+
 

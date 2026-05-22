@@ -10,7 +10,7 @@ interface CompanyFormProps {
   onSearchHK: (identifier: string) => void;
   loadingHK: boolean;
   onSelectHKDemo: (identifier: string) => void;
-  demoCompaniesHK: Array<{ company_number: string; company_name: string }>;
+  demoCompaniesHK: Array<{ company_number: string; company_name: string; ce_number?: string }>;
 }
 
 export default function CompanyForm({
@@ -156,9 +156,8 @@ export default function CompanyForm({
             </h3>
           </div>
           <p className="text-xs font-sans text-slate-500 mb-5 leading-relaxed min-h-[48px]">
-            Verification of Hong Kong SFC licensed corporations requires inputting a dedicated Central Entity Reference (CEREF) code or name. Registered entries are cross-referenced with licensing databases to execute immediate regulatory due diligence mapping.
+            Verification of Hong Kong SFC licensed corporations requires inputting a dedicated Central Entity Reference (CEREF) code or numeric CE Number. Registered entries are cross-referenced with licensing databases to execute immediate regulatory due diligence mapping.
           </p>
-
           <form onSubmit={handleHKSubmit} className="mb-4">
             <div className="relative mb-3">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -167,7 +166,7 @@ export default function CompanyForm({
               <input
                 id="hk-corporate-entity-identifier-input"
                 type="text"
-                placeholder="Hong Kong SFC CEREF (e.g. AAL982)"
+                placeholder="Hong Kong SFC CEREF or CE Number (e.g. AAB893 / 123456)"
                 value={hkInput}
                 onChange={(e) => {
                   setHkInput(e.target.value);
@@ -208,21 +207,25 @@ export default function CompanyForm({
               Available Hong Kong SFC Demo Indices
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {demoCompaniesHK.map((dem) => (
-                <button
-                  key={dem.company_number}
-                  type="button"
-                  onClick={() => {
-                    setHkInput(dem.company_number);
-                    onSelectHKDemo(dem.company_number);
-                  }}
-                  disabled={loadingHK}
-                  className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
-                >
-                  <Play className="w-2.5 h-2.5 text-slate-400" />
-                  {dem.company_name} ({dem.company_number})
-                </button>
-              ))}
+              {demoCompaniesHK.map((dem) => {
+                const ceVal = dem.ce_number || dem.company_number;
+                return (
+                  <button
+                    key={ceVal}
+                    type="button"
+                    data-ce-number={ceVal}
+                    onClick={() => {
+                      setHkInput(ceVal);
+                      onSelectHKDemo(ceVal);
+                    }}
+                    disabled={loadingHK}
+                    className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
+                  >
+                    <Play className="w-2.5 h-2.5 text-slate-400" />
+                    {dem.company_name} ({ceVal})
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

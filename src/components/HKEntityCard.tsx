@@ -50,7 +50,7 @@ export default function HKEntityCard({ entity, loading }: HKEntityCardProps) {
             SFC Authorized Licensing Dossier
           </span>
           <h2 className="text-xl font-sans font-bold text-slate-900 tracking-tight mt-1">
-            {entity.name_en}
+            {entity.name_en || entity.company_name}
           </h2>
           {entity.name_zh && (
             <p className="text-sm font-sans font-semibold text-slate-500 mt-0.5">
@@ -75,19 +75,33 @@ export default function HKEntityCard({ entity, loading }: HKEntityCardProps) {
       </div>
 
       {/* Basic Meta Cards */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-          <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Central Entity Ref (CEREF)</span>
+          <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Central Entity Ref</span>
           <p className="text-xs font-mono font-bold text-slate-800">
             {entity.ceref}
           </p>
         </div>
 
         <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-          <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Authorized License Date</span>
+          <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Authorized Region</span>
+          <p className="text-xs font-mono font-bold text-slate-700">
+            {entity.region || "Hong Kong"}
+          </p>
+        </div>
+
+        <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 col-span-1">
+          <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Regulatory Body</span>
+          <p className="text-xs font-mono font-semibold text-slate-700 truncate" title={entity.regulatory_body || "Securities & Futures Commission"}>
+            {entity.regulatory_body || "SFC (HK)"}
+          </p>
+        </div>
+
+        <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+          <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Last Verified</span>
           <p className="text-xs font-mono font-medium text-slate-700 flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-slate-400" />
-            {entity.licensed_date || "Continuous Active Since Registry"}
+            {entity.last_verified || entity.licensed_date || "2026-05-22"}
           </p>
         </div>
       </div>

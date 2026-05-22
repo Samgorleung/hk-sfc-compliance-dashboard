@@ -79,6 +79,8 @@ export interface APIErrorResponse {
 
 export interface HKLicensedEntity {
   ceref: string;
+  ce_number?: string;
+  company_name?: string;
   name_en: string;
   name_zh?: string;
   status: string;
@@ -90,4 +92,7 @@ export interface HKLicensedEntity {
   source?: string;
   db_info?: string;
   db_error?: string;
+  region?: string;
+  regulatory_body?: string;
+  last_verified?: string;
 }

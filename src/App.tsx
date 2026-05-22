@@ -34,8 +34,9 @@ export default function App() {
   // Hong Kong Market state
   const [loadingHK, setLoadingHK] = useState(false);
   const [hkEntity, setHkEntity] = useState<HKLicensedEntity | null>(null);
+  const [multipleMatches, setMultipleMatches] = useState<any[]>([]);
   const [hkErrorText, setHkErrorText] = useState<string | null>(null);
-  const [demoEntitiesHK, setDemoEntitiesHK] = useState<Array<{ company_number: string; company_name: string }>>([]);
+  const [demoEntitiesHK, setDemoEntitiesHK] = useState<Array<{ company_number: string; company_name: string; ce_number?: string }>>([]);
 
   // Combined panel active sub-tabs for the UK setup
   const [activeTabUK, setActiveTabUK] = useState<"regulatory" | "risk" | "cross_border" | "officers">("regulatory");
@@ -71,7 +72,7 @@ export default function App() {
       .then((data) => {
         setDemoEntitiesHK(data);
         if (data.length > 0) {
-          handleSearchHK(data[0].company_number);
+          handleSearchHK(data[0].ce_number || data[0].company_number);
         }
       })
       .catch((err) => {
@@ -112,7 +113,7 @@ export default function App() {
     setHkErrorText(null);
     
     try {
-      const response = await fetch(`/api/hk-entity/${identifier}`);
+      const response = await fetch(`/api/search/hk?q=${encodeURIComponent(identifier)}`);
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -120,13 +121,51 @@ export default function App() {
       }
       
       const parsedHK = await response.json();
-      setHkEntity(parsedHK);
+      if (Array.isArray(parsedHK)) {
+        if (parsedHK.length === 1) {
+          setHkEntity(parsedHK[0]);
+          setMultipleMatches([]);
+        } else if (parsedHK.length > 1) {
+          setMultipleMatches(parsedHK);
+          setHkEntity(null);
+        } else {
+          setHkEntity(null);
+          setMultipleMatches([]);
+        }
+      } else {
+        // If not an array, check if it's a valid individual object
+        if (parsedHK && typeof parsedHK === "object") {
+          setHkEntity(parsedHK);
+        } else {
+          setHkEntity(null);
+        }
+        setMultipleMatches([]);
+      }
     } catch (err: any) {
       console.error("HK license check error:", err);
       setHkErrorText(err.message || "An unexpected error occurred during the SFC licensed corporation check.");
+      setHkEntity(null);
+      setMultipleMatches([]);
     } finally {
       setLoadingHK(false);
     }
+  };
+
+  const handleSelectHKDemo = async (selectedCeNumber: string) => {
+    setLoadingHK(true);
+    setHkErrorText(null);
+    try {
+      console.log(`Executing background compliance sync request for target SFC reference: [${selectedCeNumber}].`);
+      const syncResponse = await fetch(`/api/hk-entity/${encodeURIComponent(selectedCeNumber)}`);
+      if (!syncResponse.ok) {
+        console.warn(`Background compliance sync fetch request returned an error status: ${syncResponse.status}`);
+      }
+    } catch (err) {
+      console.error("Background licensing sync network request encountered an unexpected connection failure:", err);
+    } finally {
+      setLoadingHK(false);
+    }
+    await handleSearchHK(selectedCeNumber);
   };
 
   return (
@@ -191,7 +230,7 @@ export default function App() {
 
           onSearchHK={handleSearchHK}
           loadingHK={loadingHK}
-          onSelectHKDemo={handleSearchHK}
+          onSelectHKDemo={handleSelectHKDemo}
           demoCompaniesHK={demoEntitiesHK}
         />
 
@@ -602,7 +641,7 @@ export default function App() {
 
             {/* Loading Indicator for HK */}
             {loadingHK && !hkEntity && (
-              <div className="bg-white border border-slate-200 rounded-xl p-12 text-center shadow-sm">
+              <div className="bg-white border border-slate-200 rounded-xl p-12 text-center shadow-sm animate-pulse">
                 <RefreshCw className="w-6 h-6 text-slate-900 animate-spin mx-auto mb-3" />
                 <h3 className="text-xs font-sans font-semibold text-slate-900">
                   Running HK Licensing Database Evaluation...
@@ -610,9 +649,90 @@ export default function App() {
               </div>
             )}
 
-            {/* Render HK Report Panel if available */}
-            {!loadingHK && (
-              <HKEntityCard entity={hkEntity} loading={loadingHK} />
+            {/* Render HK Results of Multi-match Search or Single-match Card */}
+            {!loadingHK && multipleMatches.length > 1 && !hkEntity ? (
+              <div id="hk-disambiguation-container" className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm animate-fadeIn">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+                  <span className="px-2.5 py-1 bg-slate-900 text-white rounded font-mono text-[10px] uppercase font-bold tracking-wider shrink-0">
+                    System Alert
+                  </span>
+                  <h3 className="text-sm font-sans font-bold text-slate-800">
+                    Multiple Matching Records Discovered
+                  </h3>
+                </div>
+                <p className="text-xs font-sans text-slate-500 mb-4 leading-relaxed">
+                  Bilateral database scan matched multiple registered entities to your query. Please select the specific legal entity to execute regional regulatory evaluation.
+                </p>
+                <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+                  {multipleMatches.map((item, index) => {
+                    const engName = item.company_name || item.name_en;
+                    const chiName = item.name_zh || "";
+                    const code = item.ce_number || item.ceref || "";
+                    return (
+                      <button
+                        key={index}
+                        id={`hk-disambiguation-item-${code}`}
+                        onClick={async () => {
+                          const targetCode = item.ce_number || item.ceref || "";
+                          setLoadingHK(true);
+                          try {
+                            const res = await fetch(`/api/hk-entity/${encodeURIComponent(targetCode)}`);
+                            if (res.ok) {
+                              const data = await res.json();
+                              if (data && data.length > 0) {
+                                setHkEntity(data[0]);
+                              } else {
+                                setHkEntity(item);
+                              }
+                            } else {
+                              setHkEntity(item);
+                            }
+                          } catch (err) {
+                            console.error("Failed background synchronization fetch:", err);
+                            setHkEntity(item);
+                          } finally {
+                            setLoadingHK(false);
+                          }
+                        }}
+                        className="w-full text-left p-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-xl cursor-pointer transition-all duration-150 flex items-center justify-between gap-4 outline-none focus:border-slate-800"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <span className="block text-xs font-sans font-bold text-slate-900 truncate">
+                            {engName}
+                          </span>
+                          {chiName && (
+                            <span className="block text-[11px] font-sans text-slate-500 font-semibold mt-0.5">
+                              {chiName}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="inline-block text-[10px] font-mono bg-slate-200 text-slate-800 px-2.5 py-0.5 rounded font-bold">
+                            {code}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              !loadingHK && (
+                <>
+                  {multipleMatches.length > 1 && hkEntity && (
+                    <div className="mb-4">
+                      <button
+                        id="hk-back-to-disambiguation-btn"
+                        onClick={() => setHkEntity(null)}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:border-slate-300 rounded-lg cursor-pointer transition-all duration-150 shadow-sm"
+                      >
+                        ← Back to Selection List ({multipleMatches.length} Matched)
+                      </button>
+                    </div>
+                  )}
+                  <HKEntityCard entity={hkEntity} loading={loadingHK} />
+                </>
+              )
             )}
 
           </div>
