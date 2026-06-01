@@ -35,6 +35,7 @@ export default function App() {
   const [hkEntity, setHkEntity] = useState<HKLicensedEntity | null>(null);
   const [multipleMatches, setMultipleMatches] = useState<any[]>([]);
   const [hkErrorText, setHkErrorText] = useState<string | null>(null);
+  const [agentLogs, setAgentLogs] = useState<{ step: string; message: string; timestamp: string; tool?: string; args?: any }[]>([]);
 
   // Combined panel active sub-tabs for the UK setup
   const [activeTabUK, setActiveTabUK] = useState<"regulatory" | "risk" | "cross_border" | "officers">("regulatory");
@@ -66,48 +67,90 @@ export default function App() {
     }
   };
 
-  // Search logic for HK Licensed Entities
+  // Search logic for HK Licensed Entities using full real-time streaming agentic pipeline
   const handleSearchHK = async (identifier: string) => {
     setLoadingHK(true);
     setHkErrorText(null);
-    
-    try {
-      const response = await fetch(`/api/search/hk?q=${encodeURIComponent(identifier)}`);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "A communication failure occurred with the SFC database check server.");
-      }
-      
-      const parsedHK = await response.json();
-      if (Array.isArray(parsedHK)) {
-        if (parsedHK.length === 1) {
-          setHkEntity(parsedHK[0]);
-          setMultipleMatches([]);
-        } else if (parsedHK.length > 1) {
-          setMultipleMatches(parsedHK);
-          setHkEntity(null);
-        } else {
-          setHkEntity(null);
-          setMultipleMatches([]);
+    setHkEntity(null);
+    setMultipleMatches([]);
+    setAgentLogs([]);
+
+    // Open EventSource context
+    const eventSource = new EventSource(`/api/agent-search-stream?q=${encodeURIComponent(identifier)}`);
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        const logItem = {
+          step: data.step,
+          message: data.message || "",
+          timestamp: new Date().toLocaleTimeString(),
+          tool: data.tool,
+          args: data.args
+        };
+        setAgentLogs(prev => [...prev, logItem]);
+
+        if (data.step === "complete") {
+          const parsedHK = data.result;
+          if (Array.isArray(parsedHK)) {
+            if (parsedHK.length === 1) {
+              setHkEntity(parsedHK[0]);
+              setMultipleMatches([]);
+            } else if (parsedHK.length > 1) {
+              setMultipleMatches(parsedHK);
+              setHkEntity(null);
+            } else {
+              setHkEntity(null);
+              setMultipleMatches([]);
+            }
+          } else if (parsedHK && typeof parsedHK === "object") {
+            setHkEntity(parsedHK);
+          }
+          setLoadingHK(false);
+          eventSource.close();
+        } else if (data.step === "error") {
+          setHkErrorText(data.message);
+          setLoadingHK(false);
+          eventSource.close();
         }
-      } else {
-        // If not an array, check if it's a valid individual object
-        if (parsedHK && typeof parsedHK === "object") {
-          setHkEntity(parsedHK);
-        } else {
-          setHkEntity(null);
-        }
-        setMultipleMatches([]);
+      } catch (parseErr) {
+        console.error("Error parsing SSE data:", parseErr);
       }
-    } catch (err: any) {
-      console.error("HK license check error:", err);
-      setHkErrorText(err.message || "An unexpected error occurred during the SFC licensed corporation check.");
-      setHkEntity(null);
-      setMultipleMatches([]);
-    } finally {
-      setLoadingHK(false);
-    }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error("Agent EventSource error:", err);
+      // Fallback: If SSE is blocked (e.g. by reverse proxies or local environment), fetch directly
+      console.warn("Real-time telemetry event stream broken. Engaging backward compatible REST fetch pool...");
+      fetch(`/api/search/hk?q=${encodeURIComponent(identifier)}`)
+        .then(res => {
+          if (!res.ok) throw new Error("A communication failure occurred with the SFC database check server.");
+          return res.json();
+        })
+        .then(parsedHK => {
+          if (Array.isArray(parsedHK)) {
+            if (parsedHK.length === 1) {
+              setHkEntity(parsedHK[0]);
+              setMultipleMatches([]);
+            } else if (parsedHK.length > 1) {
+              setMultipleMatches(parsedHK);
+              setHkEntity(null);
+            } else {
+              setHkEntity(null);
+              setMultipleMatches([]);
+            }
+          } else if (parsedHK && typeof parsedHK === "object") {
+            setHkEntity(parsedHK);
+          }
+        })
+        .catch(fetchErr => {
+          setHkErrorText(fetchErr.message || "An unexpected error occurred during the SFC licensed corporation check.");
+        })
+        .finally(() => {
+          setLoadingHK(false);
+          eventSource.close();
+        });
+    };
   };
 
   const handleSelectHKDemo = async (selectedCeNumber: string) => {
@@ -592,6 +635,67 @@ export default function App() {
                       The licensing lookup process failed to find a valid response or connect to regional endpoints. Backup procedures will activate fallback models to maintain standard assessment profiles.
                     </p>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* MCP Agent Status Logs Panel */}
+            {agentLogs.length > 0 && (
+              <div className="bg-slate-900 text-slate-200 rounded-xl border border-slate-800 p-5 shadow-lg font-mono text-[11px] leading-relaxed animate-fadeIn">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+                  <div className="flex items-center gap-2">
+                    <Database className="w-4 h-4 text-emerald-400" />
+                    <span className="font-bold text-slate-300 uppercase tracking-wider text-2xs">
+                      MCP Agent Execution logs
+                    </span>
+                  </div>
+                  <span className="flex items-center gap-1.5 text-3xs font-semibold px-2 py-0.5 bg-slate-800 rounded text-slate-400 uppercase">
+                    {loadingHK ? (
+                      <>
+                        <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping"></span>
+                        PLANNING LOOP ACTIVE
+                      </>
+                    ) : (
+                      <>
+                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></span>
+                        LOOP COMPLETE
+                      </>
+                    )}
+                  </span>
+                </div>
+                
+                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 select-text">
+                  {agentLogs.map((log, index) => {
+                    let stepColor = "text-slate-400";
+                    let stepName = log.step.toUpperCase();
+                    
+                    if (log.step === "planning") stepColor = "text-amber-400";
+                    else if (log.step === "tool_call") stepColor = "text-fuchsia-400";
+                    else if (log.step === "tool_exec") stepColor = "text-sky-400";
+                    else if (log.step === "reasoning") stepColor = "text-indigo-400";
+                    else if (log.step === "complete") stepColor = "text-emerald-400";
+                    else if (log.step === "error") stepColor = "text-rose-400";
+                    
+                    return (
+                      <div key={index} className="border-b border-slate-800/40 pb-1.5 last:border-0">
+                        <div className="flex items-start gap-1.5">
+                          <span className="text-slate-600 shrink-0 select-none">[{log.timestamp}]</span>
+                          <span className={`font-bold uppercase tracking-wider text-[10px] shrink-0 ${stepColor}`}>
+                            {stepName}:
+                          </span>
+                          <span className="text-slate-300 flex-1">{log.message}</span>
+                        </div>
+                        {log.tool && (
+                          <div className="pl-14 mt-1 text-slate-500 text-3xs flex flex-col gap-0.5">
+                            <div><strong className="text-slate-400">Tool:</strong> <code className="bg-slate-800 px-1 py-0.5 rounded text-slate-300">{log.tool}</code></div>
+                            {log.args && Object.keys(log.args).length > 0 && (
+                              <div><strong className="text-slate-400">Args:</strong> <code className="text-slate-400 text-[10px]">{JSON.stringify(log.args)}</code></div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

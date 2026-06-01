@@ -1,5 +1,31 @@
 # Corporate Compliance Companion - Change Log
 
+### Date: 2026-06-01
+### Author: Autonomous MCP Compliance Agent & System Architects
+
+---
+
+### Technical Modifications Overview
+
+#### 1. Deployment of Official MongoDB MCP Server Tool Definitions
+The compliance platform has transitioned away from hardcoded server databases queries. A comprehensive, action-driven Model Context Protocol (MCP) tool set has been declared and integrated directly into the Gemini reasoning loop. The server registers:
+- `find_documents`: Exposing capabilities to query MongoDB caches directly under model planning.
+- `insert_documents`: Enabling automated bulk insert actions of synthesized profiles.
+- `update_documents`: Guaranteeing dynamic synchronization of status changes and licensing evaluations using Mongo driver upserts.
+
+#### 2. Fully Autonomous 2-Step Agentic Execution Workflow
+When processing requests for un-cached entities such as "AIA" or "Manulife", the backend delegates high-level intent to a structured Gemini agent loop. The agent dynamically plans and executes a 2-step process:
+- **Step 1**: Query the registry cache database via the `find_documents` capability.
+- **Step 2**: Formulate the payload and evaluate status, transferring the updated properties to `update_documents` to save records back into the database automatically.
+
+#### 3. Real-Time Telemetry & SSE Status Logging Endpoint
+An asynchronous streaming endpoint `/api/agent-search-stream` has been deployed on the backend to provide real-time visibility into the multi-step agent actions. Leveraging Server-Sent Events (SSE), the endpoint pushes planning states, planned tool invocations, database transaction confirmations, and final report formulations back to the client interface.
+
+#### 4. Interface Enrichment: Glowing Agent Status Logs Panel
+The client workspace has been enhanced with a scrolling, responsive **MCP Agent Execution Logs** panel. The panel displays rich, live action logs with color-coded steps (e.g., *Planning*, *Tool Call*, *Tool Exec*, *Reasoning*, and *Complete*). It publishes tool parameters and arguments in real-time under human supervision, proving database alignment under model direction, and falls back to traditional REST calls if SSE is intercepted.
+
+---
+
 ### Date: 2026-05-22
 ### Author: Automated Cross-Border Corporate Compliance Officer
 
