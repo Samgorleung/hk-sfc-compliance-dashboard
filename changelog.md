@@ -95,5 +95,6 @@ To support seamless cross-border corporate alignment, the central data mapping r
 #### 9. Preventative Control for Unmatched SFC Identifiers
 To eliminate potential generative hallucinations on invalid search criteria, the routing logic of the Hong Kong Securities and Futures Commission (SFC) query system has been modified. In the event of a database search miss against both the live MongoDB collection and the pre-cached registry, the server immediately halts execution and returns an HTTP 404 Corporate Record Not Found response. This preventative safety measure ensures that unmatched or empty queries are not processed by dynamic LLM generation layers or passed to the underlying AI synthesis prompts, forcing a clean error state on the frontend.
 
-
+20260607
+UI and logic update, add report(s).
 
