@@ -1,5 +1,47 @@
 # Corporate Compliance Companion - Change Log
 
+### Date: 2026-06-08
+### Author: Autonomous MCP Compliance Agent & System Architects
+
+---
+
+### Technical Modifications Overview
+
+#### 1. Dynamic Database Auto-Healing and Staleness Strategy
+The cross-border compliance caching strategy has been substantially upgraded to prevent the serving of outdated or corrupted profiles. An advanced `isDocumentStale` evaluation matrix now continuously audits MongoDB payloads for age limits (older than 24 hours) or incomplete record formatting (e.g., missing critical FCA status paragraphs or SFC disciplinary registers). Stale or corrupted records proactively trigger cache bypasses to enforce real-time, live compliance agent evaluations. Furthermore, corrupted naming records within the UK entity table (`uk_licensed_entities`) are now auto-healed in real-time, pulling directly from the centralized live data standards.
+
+#### 2. Global Cross-Border Audit Memorandum Exporter
+To bridge the gap between digital dashboard verifications and formal corporate reporting requirements, a comprehensive "Due Diligence Memorandum" module has been integrated. Evaluators can now seamlessly export a certified bilateral standing audit encompassing both the London and Hong Kong jurisdictions simultaneously. Reports feature dynamic cryptographic SHA-seal watermarks, alignment matrix tables, and can be rendered and exported as standard HTML, Markdown, or high-fidelity printable PDFs utilizing localized rendering paths via `html2canvas` and `jspdf`.
+
+#### 3. Resilient Rate Limit Adaptive Fallbacks and Backoffs
+Interaction with remote AI generation sequences has been extensively hardened. The core `generateContentWithRetry` cycle now utilizes true exponential backoffs for 429 rate limit statuses, scaling delay execution incrementally alongside mathematical backoff curves. Should the infrastructure exhaust consecutive attempts entirely, the application intercepts and fails gracefully—serving localized, fully-formed surrogate compliance dossiers without interrupting the underlying user experience or producing visual application crashes.
+
+#### 4. Real-Time UI Telemetry and Connection Hardening
+The user interface has been refined to cleanly report system health integrity. The primary dashboard dynamically queries `/api/health` to confirm the presence of valid server-side API keys, signaling operational status ("Paid API Key Active" versus "Using Base Key"). Furthermore, benign Vite Hot Module Replacement (HMR) WebSocket rejections associated with sandboxed external integrations have been gracefully intercepted and suppressed at the global DOM `error` boundaries, providing pristine developer console feeds.
+
+---
+
+### Date: 2026-06-05
+### Author: Autonomous MCP Compliance Agent & System Architects
+
+---
+
+### Technical Modifications Overview
+
+#### 1. Resolution of Regulatory Scope Imbalance
+The compliance infrastructure governing United Kingdom corporate assessments has been elevated to achieve strict parity with the Hong Kong SFC verification framework. The system has shifted beyond simple existence confirmation sequences (via Companies House) to encompass full regulatory and disciplinary validation. A dedicated `query_fca_register` capability was introduced to directly query the UK Financial Conduct Authority (FCA) Register and retrieve active regulated activities, permissions, and disciplinary red flags.
+
+#### 2. Symmetric UK Multi-Step Agentic Verification Workflow
+The server architecture now features a dual registry orchestration loop for the United Kingdom market. For targeted entities such as Barclays, a specialized Gemini reasoning loop autonomously executes a multi-step compliance action plan:
+- **Step 1**: Synthesizes a preliminary corporate parameter check using the `query_companies_house` MCP tool.
+- **Step 2**: Directly correlates corresponding authorized behaviors and standing via the `query_fca_register` protocol.
+- **Step 3**: Synthesizes the dual-registry findings into a comprehensive suite of third-person evaluations and invokes the `update_documents` MCP tool to commit the final unified profile into the `uk_licensed_entities` MongoDB collection.
+
+#### 3. Client Status View Unification
+User interface modularity on the primary dashboard has been unified across cross-border markets. The frontend presentation card for the United Kingdom (`UKEntityCard`) has been upgraded to match the structural depth, telemetry logging, and comprehensive visual presentation of its Hong Kong counterpart (`HKEntityCard`). Dashboard metrics now identically prioritize Registry Existence strings, Authorized Activity Lists, and Active Licensing Status chips alongside real-time transparent SSE telemetry logic panels for live reasoning feedback.
+
+---
+
 ### Date: 2026-06-01
 ### Author: Autonomous MCP Compliance Agent & System Architects
 
@@ -95,6 +137,5 @@ To support seamless cross-border corporate alignment, the central data mapping r
 #### 9. Preventative Control for Unmatched SFC Identifiers
 To eliminate potential generative hallucinations on invalid search criteria, the routing logic of the Hong Kong Securities and Futures Commission (SFC) query system has been modified. In the event of a database search miss against both the live MongoDB collection and the pre-cached registry, the server immediately halts execution and returns an HTTP 404 Corporate Record Not Found response. This preventative safety measure ensures that unmatched or empty queries are not processed by dynamic LLM generation layers or passed to the underlying AI synthesis prompts, forcing a clean error state on the frontend.
 
-20260607
-UI and logic update, add report(s).
+
 

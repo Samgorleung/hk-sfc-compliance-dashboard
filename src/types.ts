@@ -77,6 +77,23 @@ export interface APIErrorResponse {
   partialData?: Partial<ComplianceReport>;
 }
 
+export interface UKLicensedEntity {
+  company_number: string;
+  company_name: string;
+  status: string;
+  incorporation_date?: string;
+  regulatory_body?: string;
+  regulated_activities: string[];
+  companies_house_compliance: string; // Written in third-person comprehensive paragraphs
+  fca_register_status: string;        // Written in third-person comprehensive paragraphs
+  risk_profile: string;               // Written in third-person comprehensive paragraphs
+  source?: string;
+  db_info?: string;
+  db_error?: string;
+  region?: string;
+  last_verified?: string;
+}
+
 export interface HKLicensedEntity {
   ceref: string;
   ce_number?: string;
