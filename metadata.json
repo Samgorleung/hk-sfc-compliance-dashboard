@@ -1,6 +1,8 @@
 {
-  "name": "Dual-Market Compliance Dashboard",
-  "description": "Automated Cross-Border Corporate Compliance Officer tool mapping UK Companies House data to HK dual-market regulatory frameworks.",
+  "name": "Remix: Dual-Market Compliance Dashboard",
+  "description": "Automated Cross-Border Corporate Compliance Officer tool mapping UK Companies House data to UK-US dual-market regulatory frameworks.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

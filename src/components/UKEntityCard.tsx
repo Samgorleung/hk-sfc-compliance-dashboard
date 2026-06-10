@@ -50,6 +50,14 @@ export default function UKEntityCard({ entity, loading }: UKEntityCardProps) {
   const fallbackRiskProfile = entity.risk_profile || 
     `The bilateral standing risk assessment indicates a baseline 'Low' rating profile. Internal controls align with anti-money laundering regulations and capital resource requirements. Continuous surveillance practices are enacted through designated corporate compliance officers, supporting stable market continuity characteristics.`;
 
+  const activities = entity && (
+    Array.isArray(entity.regulated_activities)
+      ? entity.regulated_activities
+      : typeof entity.regulated_activities === "string"
+        ? (entity.regulated_activities as string).split(/[;,]|\n/).map(s => s.trim()).filter(Boolean)
+        : []
+  ) || [];
+
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden transition-all duration-300 hover:border-slate-300">
       <div className="absolute top-0 left-0 w-1 h-full bg-slate-800"></div>
@@ -117,8 +125,8 @@ export default function UKEntityCard({ entity, loading }: UKEntityCardProps) {
       <div className="mb-6">
         <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-2">FCA Authorized Regulated Activities</span>
         <div className="flex flex-wrap gap-1.5">
-          {entity.regulated_activities && entity.regulated_activities.length > 0 ? (
-            entity.regulated_activities.map((act, index) => (
+          {activities.length > 0 ? (
+            activities.map((act, index) => (
               <span key={index} className="px-2.5 py-1 text-xs font-sans font-semibold rounded-lg bg-slate-100 border border-slate-200 text-slate-800 shadow-sm">
                 {act}
               </span>

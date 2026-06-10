@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Loader2, Play, Building2, ShieldCheck } from "lucide-react";
+import { Search, Loader2, Play, Building2, ShieldCheck, Network, Lock } from "lucide-react";
 
 interface CompanyFormProps {
   onSearchUK: (companyNumber: string) => void;
@@ -28,6 +28,7 @@ export default function CompanyForm({
   const handleUKSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setUkError("");
+    setHkError("");
 
     const formatted = ukInput.trim();
     if (!formatted) {
@@ -46,6 +47,7 @@ export default function CompanyForm({
   const handleHKSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setHkError("");
+    setUkError("");
 
     const formatted = hkInput.trim();
     if (!formatted) {
@@ -59,7 +61,9 @@ export default function CompanyForm({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       {/* UK Corporate Entity Verification Panel */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative flex flex-col justify-between">
+      <div className={`bg-white border rounded-xl p-6 shadow-sm relative flex flex-col justify-between transition-all duration-300 ${
+        loadingHK ? "border-slate-100 opacity-60" : "border-slate-200"
+      }`}>
         <div className="absolute top-0 left-0 w-full h-1 bg-slate-800"></div>
         <div>
           <div className="flex items-center gap-2 mb-5">
@@ -83,21 +87,26 @@ export default function CompanyForm({
                   setUkInput(e.target.value);
                   if (ukError) setUkError("");
                 }}
-                disabled={loadingUK}
-                className="block w-full pl-9 pr-4 py-2 font-mono text-xs text-slate-800 placeholder-slate-400 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 rounded-lg outline-hidden transition-all duration-200"
+                disabled={loadingUK || loadingHK}
+                className="block w-full pl-9 pr-4 py-2 font-mono text-xs text-slate-800 placeholder-slate-400 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 rounded-lg outline-hidden transition-all duration-200 disabled:opacity-55 disabled:cursor-not-allowed"
               />
             </div>
             
             <button
               id="verify-compliance-button"
               type="submit"
-              disabled={loadingUK}
-              className="w-full px-4 py-2 text-xs font-sans font-bold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 disabled:bg-slate-300 rounded-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors duration-200"
+              disabled={loadingUK || loadingHK}
+              className="w-full px-4 py-2 text-xs font-sans font-bold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 disabled:bg-slate-300 rounded-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors duration-200 disabled:cursor-not-allowed"
             >
               {loadingUK ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   Executing evaluation...
+                </>
+              ) : loadingHK ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  Locked - HK Agent Active
                 </>
               ) : (
                 "Verify UK Legal Standing"
@@ -121,10 +130,12 @@ export default function CompanyForm({
               type="button"
               onClick={() => {
                 setUkInput("00048839");
+                setUkError("");
+                setHkError("");
                 onSelectUKDemo("00048839");
               }}
-              disabled={loadingUK}
-              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
+              disabled={loadingUK || loadingHK}
+              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Play className="w-2.5 h-2.5 text-slate-400" />
               BARCLAYS PLC (00048839)
@@ -134,7 +145,9 @@ export default function CompanyForm({
       </div>
 
       {/* Hong Kong SFC Licensed Entity Check Panel */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative flex flex-col justify-between">
+      <div className={`bg-white border rounded-xl p-6 shadow-sm relative flex flex-col justify-between transition-all duration-300 ${
+        loadingUK ? "border-slate-100 opacity-60" : "border-slate-200"
+      }`}>
         <div className="absolute top-0 left-0 w-full h-1 bg-slate-800"></div>
         <div>
           <div className="flex items-center gap-2 mb-5">
@@ -157,21 +170,26 @@ export default function CompanyForm({
                   setHkInput(e.target.value);
                   if (hkError) setHkError("");
                 }}
-                disabled={loadingHK}
-                className="block w-full pl-9 pr-4 py-2 font-mono text-xs text-slate-800 placeholder-slate-400 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 rounded-lg outline-hidden transition-all duration-200"
+                disabled={loadingHK || loadingUK}
+                className="block w-full pl-9 pr-4 py-2 font-mono text-xs text-slate-800 placeholder-slate-400 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 rounded-lg outline-hidden transition-all duration-200 disabled:opacity-55 disabled:cursor-not-allowed"
               />
             </div>
             
             <button
               id="verify-hk-licensing-button"
               type="submit"
-              disabled={loadingHK}
-              className="w-full px-4 py-2 text-xs font-sans font-bold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 disabled:bg-slate-300 rounded-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors duration-200"
+              disabled={loadingHK || loadingUK}
+              className="w-full px-4 py-2 text-xs font-sans font-bold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 disabled:bg-slate-300 rounded-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors duration-200 disabled:cursor-not-allowed"
             >
               {loadingHK ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   Executing evaluation...
+                </>
+              ) : loadingUK ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  Locked - UK Agent Active
                 </>
               ) : (
                 "Verify HK Licensing Standing"
@@ -196,10 +214,12 @@ export default function CompanyForm({
               data-ce-number="AAB893"
               onClick={() => {
                 setHkInput("AAB893");
+                setHkError("");
+                setUkError("");
                 onSelectHKDemo("AAB893");
               }}
-              disabled={loadingHK}
-              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50"
+              disabled={loadingHK || loadingUK}
+              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-sans font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Play className="w-2.5 h-2.5 text-slate-400" />
               CLSA LIMITED (AAB893)

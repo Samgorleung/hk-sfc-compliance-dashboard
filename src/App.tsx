@@ -24,6 +24,7 @@ import EntityOverview from "./components/EntityOverview";
 import HKEntityCard from "./components/HKEntityCard";
 import UKEntityCard from "./components/UKEntityCard";
 import DueDiligenceMemo from "./components/DueDiligenceMemo";
+import RegulatoryWorkspaceHub from "./components/RegulatoryWorkspaceHub";
 
 export default function App() {
   // UK / US Market state
@@ -41,6 +42,7 @@ export default function App() {
   const [agentLogs, setAgentLogs] = useState<{ step: string; message: string; timestamp: string; tool?: string; args?: any }[]>([]);
   const [ukAgentLogs, setUkAgentLogs] = useState<{ step: string; message: string; timestamp: string; tool?: string; args?: any }[]>([]);
   const [hasApiKey, setHasApiKey] = useState(false);
+  const [concurrencyMode, setConcurrencyMode] = useState<"parallel" | "sequential">("parallel");
 
   useEffect(() => {
     fetch("/api/health")
@@ -51,6 +53,18 @@ export default function App() {
         }
       })
       .catch(err => console.error("Error checking system health status:", err));
+
+    // Handle forward-link query parameters on page load to restore compliance report status instantly
+    const searchParams = new URLSearchParams(window.location.search);
+    const q = searchParams.get("q");
+    const jurisdiction = searchParams.get("jurisdiction");
+    if (q) {
+      if (jurisdiction === "HK") {
+        handleSearchHK(q);
+      } else if (jurisdiction === "UK") {
+        handleSearchUK(q);
+      }
+    }
   }, []);
 
   // Combined panel active sub-tabs for the UK setup
@@ -63,6 +77,13 @@ export default function App() {
     setUkErrorDetails(null);
     setUkEntity(null);
     setUkAgentLogs([]);
+    setReport(null);
+
+    // Completely clear previous HK state and logs to focus entirely on the current request
+    setHkEntity(null);
+    setHkErrorText(null);
+    setAgentLogs([]);
+    setMultipleMatches([]);
     
     const eventSource = new EventSource(`/api/agent-search-uk-stream?q=${encodeURIComponent(companyNumber)}&force=true`);
 
@@ -115,6 +136,13 @@ export default function App() {
     setHkEntity(null);
     setMultipleMatches([]);
     setAgentLogs([]);
+    setReport(null);
+
+    // Completely clear previous UK state and logs to focus entirely on the current request
+    setUkEntity(null);
+    setUkErrorText(null);
+    setUkErrorDetails(null);
+    setUkAgentLogs([]);
 
     // Open EventSource context
     const eventSource = new EventSource(`/api/agent-search-stream?q=${encodeURIComponent(identifier)}&force=true`);
@@ -230,16 +258,6 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-3 text-xs font-mono text-slate-500">
-            {hasApiKey ? (
-              <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md shadow-2xs font-semibold animate-pulse">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                Paid API Key Active
-              </span>
-            ) : (
-              <span className="flex items-center gap-1.5 px-1.5 py-1 text-slate-400">
-                Using Base Key
-              </span>
-            )}
             <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 rounded-md border border-slate-200 shadow-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Systems Core Operational
@@ -593,8 +611,36 @@ export default function App() {
 
         </div>
 
+        {/* Interactive Workspace, Group tree, and Deadlines hub */}
+        {(ukEntity || hkEntity) && (
+          <RegulatoryWorkspaceHub ukEntity={ukEntity} hkEntity={hkEntity} />
+        )}
+
         {/* Global Cross-Border Audit Memorandum Exporter */}
-        <DueDiligenceMemo ukEntity={ukEntity} hkEntity={hkEntity} />
+        {concurrencyMode === "parallel" ? (
+          <div className="space-y-8 print:space-y-0">
+            {ukEntity && (
+              <div className="border-t border-slate-200 pt-6">
+                <div className="bg-slate-900 text-white px-4 py-2 rounded-t-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+                  <span>United Kingdom (FCA) Audit-Ready Memorandum</span>
+                </div>
+                <DueDiligenceMemo ukEntity={ukEntity} hkEntity={null} forceJurisdictionMode="UK" />
+              </div>
+            )}
+            {hkEntity && (
+              <div className="border-t border-slate-200 pt-6">
+                <div className="bg-emerald-950 text-white px-4 py-2 rounded-t-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>Hong Kong (SFC) Audit-Ready Memorandum</span>
+                </div>
+                <DueDiligenceMemo ukEntity={null} hkEntity={hkEntity} forceJurisdictionMode="HK" />
+              </div>
+            )}
+          </div>
+        ) : (
+          <DueDiligenceMemo ukEntity={ukEntity} hkEntity={hkEntity} forceJurisdictionMode="BOTH" />
+        )}
 
       </main>
 
